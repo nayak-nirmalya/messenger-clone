@@ -6,6 +6,7 @@ import AuthSocialButton from "./AuthSocialButton";
 
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { signIn } from "next-auth/react";
 import { BsGoogle, BsGithub } from "react-icons/bs";
 import React, { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -47,14 +48,33 @@ const AuthForm = () => {
     }
 
     if (variant === "LOGIN") {
-      // NextAuth SignIn
+      signIn("credentials", {
+        ...data,
+        redirect: false
+      })
+        .then((callback) => {
+          if (callback?.error) toast.error("Invalid Credentials!");
+
+          if (callback?.ok && !callback?.error) {
+            toast.success("Logged In.");
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
-  const socialAction = (action: string) => {
+  const socialAction = (action: "gihub" | "google") => {
     setIsLoading(true);
 
-    // NextAuth Social SignIn
+    signIn(action, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) toast.error("Invalid Credentials!");
+
+        if (callback?.ok && !callback?.error) {
+          toast.success("Logged In.");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
