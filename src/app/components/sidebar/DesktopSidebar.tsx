@@ -1,6 +1,6 @@
 "use client";
 
-import useRoutes from "@/hooks/useRoute";
+import useRoutes from "@/hooks/useRoutes";
 import React, { useState } from "react";
 import DesktopItem from "./DesktopItem";
 
