@@ -5,12 +5,12 @@ import Header from "./components/Header";
 import Body from "./components/Body";
 
 interface IParams {
-  coversationId: string;
+  conversationId: string;
 }
 
 const ConversationID = async ({ params }: { params: IParams }) => {
-  const conversation = await getConversationById(params.coversationId);
-  const messages = await getMessages(params.coversationId);
+  const conversation = await getConversationById(params.conversationId);
+  const messages = await getMessages(params.conversationId);
 
   if (!conversation) {
     return (
