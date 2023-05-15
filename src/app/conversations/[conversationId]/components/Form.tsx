@@ -5,6 +5,7 @@ import React from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { HiPhoto } from "react-icons/hi2";
 
+import MessageInput from "./MessageInput";
 import useConversation from "@/hooks/useConversation";
 
 const Form = () => {
@@ -52,7 +53,15 @@ const Form = () => {
             lg:gap-4
             w-full
         "
-      ></form>
+      >
+        <MessageInput
+          id="message"
+          register={register}
+          errors={errors}
+          required
+          placeholder="Write a Message"
+        />
+      </form>
     </div>
   );
 };
