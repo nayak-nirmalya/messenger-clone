@@ -22,6 +22,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
     .filter((user) => user.email !== data?.sender?.email)
     .map((user) => user.name)
     .join(", ");
+  console.log(data.seen);
 
   const container = clsx("flex gap-3 p-4", isOwn && "justify-end");
 
@@ -68,6 +69,18 @@ const MessageBox: React.FC<MessageBoxProps> = ({ data, isLast }) => {
             <div>{data.body}</div>
           )}
         </div>
+
+        {isLast && isOwn && seenList.length > 0 && (
+          <div
+            className="
+                text-xs
+                font-light
+                text-gray-500
+            "
+          >
+            {`Seen by ${seenList}`}
+          </div>
+        )}
       </div>
     </div>
   );
