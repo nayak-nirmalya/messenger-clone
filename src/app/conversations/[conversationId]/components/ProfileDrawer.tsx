@@ -2,7 +2,7 @@
 
 import React, { Fragment, useMemo } from "react";
 import { format } from "date-fns";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoTrash } from "react-icons/io5";
 import { Dialog, Transition } from "@headlessui/react";
 
 import useOtherUser from "@/hooks/useOtherUesr";
@@ -162,6 +162,41 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                             "
                         >
                           {statusText}
+                        </div>
+                        <div className="flex gap-10 my-8">
+                          <div
+                            onClick={() => {}}
+                            className="
+                                flex
+                                flex-col
+                                gap-3
+                                items-center
+                                cursor-pointer
+                                hover:opacity-75
+                            "
+                          >
+                            <div
+                              className="
+                                    w-10 h-10
+                                    bg-neutral-100
+                                    rounded-full
+                                    flex
+                                    items-center
+                                    justify-center
+                                "
+                            >
+                              <IoTrash size={20} />
+                            </div>
+                            <div
+                              className="
+                                    text-sm
+                                    font-light
+                                    text-neutral-600
+                                "
+                            >
+                              Delete
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
