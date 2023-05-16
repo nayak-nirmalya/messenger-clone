@@ -7,6 +7,7 @@ import { Dialog, Transition } from "@headlessui/react";
 
 import useOtherUser from "@/hooks/useOtherUesr";
 import { Conversation, User } from "@prisma/client";
+import Avatar from "@/app/components/Avatar";
 
 interface ProfileDrawerProps {
   isOpen: boolean;
@@ -136,6 +137,31 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                             <span className="sr-only">Close Panel</span>
                             <IoClose size={24} />
                           </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      className="
+                            relative
+                            mt-6
+                            flex-1
+                            px-4
+                            sm:px-6
+                        "
+                    >
+                      <div className="flex flex-col items-center">
+                        <div className="mb-2">
+                          <Avatar user={otherUser} />
+                        </div>
+                        <div>{title}</div>
+                        <div
+                          className="
+                                text-sm
+                                text-gray-500
+                            "
+                        >
+                          {statusText}
                         </div>
                       </div>
                     </div>
