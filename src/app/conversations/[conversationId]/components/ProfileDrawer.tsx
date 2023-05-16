@@ -11,7 +11,11 @@ interface ProfileDrawerProps {
   };
 }
 
-const ProfileDrawer: React.FC<ProfileDrawerProps> = ({}) => {
+const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
+  isOpen,
+  onClose,
+  data
+}) => {
   return <div>ProfileDrawer</div>;
 };
 
