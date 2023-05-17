@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { IoClose, IoTrash } from "react-icons/io5";
 import { Dialog, Transition } from "@headlessui/react";
@@ -24,6 +24,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
   data
 }) => {
   const otherUser = useOtherUser(data);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const joinedDate = useMemo(() => {
     return format(new Date(otherUser.createdAt), "PP");
@@ -41,7 +42,11 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
 
   return (
     <>
-      <Modal isOpen onClose={() => {}} />
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className="bg-white p-5">
+          <p>Hello Modal!</p>
+        </div>
+      </Modal>
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={onClose}>
           <Transition.Child
@@ -168,7 +173,7 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                           </div>
                           <div className="flex gap-10 my-8">
                             <div
-                              onClick={() => {}}
+                              onClick={() => setIsModalOpen(true)}
                               className="
                                 flex
                                 flex-col
