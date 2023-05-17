@@ -4,7 +4,12 @@ import React from "react";
 
 import Modal from "@/app/components/Modal";
 
-const ConfirmModal = () => {
+interface ConfirmModalProps {
+  isOpen?: boolean;
+  onClose: () => void;
+}
+
+const ConfirmModal: React.FC<ConfirmModalProps> = ({ isOpen, onClose }) => {
   return <div>ConfirmModal</div>;
 };
 
