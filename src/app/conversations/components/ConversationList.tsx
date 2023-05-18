@@ -1,15 +1,18 @@
 "use client";
 
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from "react-icons/md";
 import { useRouter } from "next/navigation";
+import { find } from "lodash";
 
 import { FullConversationType } from "@/types";
 import useConversation from "@/hooks/useConversation";
 import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { User } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { pusherClient } from "@/libs/pusher";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -20,12 +23,39 @@ const ConversationList: React.FC<ConversationListProps> = ({
   initialItems,
   users
 }) => {
+  const session = useSession();
   const [items, setItems] = useState(initialItems);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const router = useRouter();
 
   const { conversationId, isOpen } = useConversation();
+
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherKey) return;
+
+    pusherClient.subscribe(pusherKey);
+
+    const newHandler = (conversation: FullConversationType) => {
+      setItems((current) => {
+        if (find(current, { id: conversation.id })) return current;
+
+        return [conversation, ...current];
+      });
+    };
+
+    pusherClient.bind("conversation:new", newHandler);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+      pusherClient.unbind("conversation:new", newHandler);
+    };
+  }, [pusherKey]);
+
   return (
     <>
       <GroupChatModal
@@ -35,7 +65,18 @@ const ConversationList: React.FC<ConversationListProps> = ({
       />
       <aside
         className={clsx(
-          `fixed inset-y-0 pb-20 lg:pb-0 lg:left-20 lg:w-80 lg:block overflow-y-auto border-r border-gray-200`,
+          `
+            fixed
+            inset-y-0
+            pb-20
+            lg:pb-0
+            lg:left-20
+            lg:w-80
+            lg:block
+            overflow-y-auto
+            border-r
+            border-gray-200
+          `,
           isOpen ? "hidden" : "block w-full left-0"
         )}
       >
