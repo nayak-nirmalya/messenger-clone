@@ -1,9 +1,9 @@
 "use client";
 
-// import useActiveChannel from "@/hooks/useActiveChannel";
+import useTypingChannel from "@/hooks/useTypingChannel";
 
 const TypingStatus = () => {
-  // useActiveChannel();
+  useTypingChannel();
 
   return null;
 };
