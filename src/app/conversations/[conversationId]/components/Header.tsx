@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { HiChevronLeft, HiEllipsisHorizontal } from "react-icons/hi2";
+import { useSession } from "next-auth/react";
 
 import { Conversation, User } from "@prisma/client";
 import useOtherUser from "@/hooks/useOtherUesr";
@@ -10,6 +11,8 @@ import Avatar from "@/app/components/Avatar";
 import ProfileDrawer from "./ProfileDrawer";
 import AvatarGroup from "@/app/components/AvatarGroup";
 import useActiveList from "@/hooks/useActiveList";
+import { pusherClient } from "@/libs/pusher";
+import useConversation from "@/hooks/useConversation";
 
 interface HeaderProps {
   conversation: Conversation & {
@@ -18,19 +21,46 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ conversation }) => {
+  const session = useSession();
   const otherUser = useOtherUser(conversation);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [typing, setTyping] = useState<boolean>(false);
+  const { conversationId, isOpen } = useConversation();
 
   const { members } = useActiveList();
   const isActive = members.indexOf(otherUser?.email!) !== -1;
+
+  const pusherKey = useMemo(() => {
+    return session.data?.user?.email;
+  }, [session.data?.user?.email]);
+
+  useEffect(() => {
+    if (!pusherKey) return;
+
+    pusherClient.subscribe(pusherKey);
+
+    const typingHandler = () => {
+      setTyping(true);
+
+      const timeOut = setTimeout(() => setTyping(false), 2000);
+    };
+
+    pusherClient.bind("user:typing", typingHandler);
+
+    return () => {
+      pusherClient.unsubscribe(pusherKey);
+
+      pusherClient.unbind("user:typing", typingHandler);
+    };
+  }, [pusherKey, conversationId]);
 
   const statusText = useMemo(() => {
     if (conversation.isGroup) {
       return `${conversation.user.length} Members`;
     }
 
-    return isActive ? "Active" : "Offline";
-  }, [conversation, isActive]);
+    return isActive ? (typing ? "Typing..." : "Active") : "Offline";
+  }, [conversation, isActive, typing]);
 
   return (
     <>
